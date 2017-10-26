@@ -10,7 +10,7 @@ ELB:
       - sg-5a391333
       - sg-5a391334
   TargetGroup:
-    - group.1:
+    -
       name: jameson-80
       port: 80
       protocol: http
@@ -18,7 +18,7 @@ ELB:
       stickiness:
         value: true
         duration: 2 hours
-    - group.2:
+    -
       name: jameson-8080
       port: 8080
       protocol: https
@@ -27,18 +27,18 @@ ELB:
         value: false
 
 
-#Repositories:
-#  - name: inno/test
-#    tag: 0.3
-#  - name: inno/hello
-#    tag: 0.2
+Repositories:
+  - name: inno/test
+    tag: 0.3
+  - name: inno/hello
+    tag: 0.2
 
 # hardMemory: container will be killed if exceed
 # softMemory: memory reservation
 # if set both, hard limit must be greater than soft limit
 # portMapping: host port:container port
 TaskDef:
-  - task.1:
+  -
     name: firstTask
     taskRole: ecs-task-role
     container:
