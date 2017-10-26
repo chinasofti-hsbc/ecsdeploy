@@ -1,3 +1,6 @@
+# scheme can be internet-facing, internal
+# protocol can be http, https, tcp
+# duration can be seconds, minutes, hours, days
 ELB:
   LoadBalance:
     name: jameson-elb
@@ -5,6 +8,7 @@ ELB:
 	vpc: 233
 	  - az.1: subnet-98a3d7f1
 	  - az.2: subnet-67c77a1c
+	securityGroup: sg-5a391333
   TargetGroup:
     - 1:
 	  name: jameson-80
@@ -19,4 +23,43 @@ ELB:
 	  protocol: https
 	  vpc: 233
 	  stickiness: false
+
+
+#Repositories:
+#  - name: inno/test
+#    tag: 0.3
+#  - name: inno/hello
+#    tag: 0.2
+
+# hardMemory: container will be killed if exceed
+# softMemory: memory reservation
+# if set both, hard limit must be greater than soft limit
+# portMapping: host port:container port
+TaskDef:
+  - name: jameson-hello
+    taskRole: ecs-task-role
+	- container:
+	    - name: jameson-test
+		  image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/test:0.3
+		  hardMemory: 300
+		  softMemory: 200
+	      portMapping: 80:80
+	    - name: jameson-hello
+		  image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/hello:0.2
+		  hardMemory: 300
+		  softMemory: 200
+	      portMapping: 8080:8080
+
+# Provisioning Model: onDemand, spot
+Cluster:
+  name: jameson-cluster
+  ProvisioningModel: onDemand
+  ec2type: t2.micro
+  numberOfInstance: 2
+  EBS: 22
+  keyPair: jameson-keypair
+  vpc: 233
+    - az.1: subnet-98a3d7f1
+	- az.2: subnet-67c77a1c
+  securityGroup: sg-5a391333
 
