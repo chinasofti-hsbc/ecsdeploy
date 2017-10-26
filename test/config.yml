@@ -1,0 +1,22 @@
+ELB:
+  LoadBalance:
+    name: jameson-elb
+	scheme: internet-facing
+	vpc: 233
+	  - az.1: subnet-98a3d7f1
+	  - az.2: subnet-67c77a1c
+  TargetGroup:
+    - 1:
+	  name: jameson-80
+      port: 80
+	  protocol: http
+	  vpc: 233
+	  stickiness: true
+		duration: 2 hours
+    - 2:
+	  name: jameson-8080
+      port: 8080
+	  protocol: https
+	  vpc: 233
+	  stickiness: false
+
