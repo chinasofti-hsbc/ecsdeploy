@@ -4,51 +4,54 @@
 ELB:
   LoadBalance:
     name: jameson-elb
-	scheme: internet-facing
-	vpc: 233
-	  - az.1: subnet-98a3d7f1
-	  - az.2: subnet-67c77a1c
-	securityGroup: sg-5a391333
+    scheme: internet-facing
+    vpc: 233
+    subnetId:
+      - sg-5a391333
+      - sg-5a391334
   TargetGroup:
-    - 1:
-	  name: jameson-80
+    -
+      name: jameson-80
       port: 80
-	  protocol: http
-	  vpc: 233
-	  stickiness: true
-		duration: 2 hours
-    - 2:
-	  name: jameson-8080
+      protocol: http
+      vpc: 233
+      stickiness:
+        value: true
+        duration: 2 hours
+    -
+      name: jameson-8080
       port: 8080
-	  protocol: https
-	  vpc: 233
-	  stickiness: false
+      protocol: https
+      vpc: 233
+      stickiness:
+        value: false
 
 
-#Repositories:
-#  - name: inno/test
-#    tag: 0.3
-#  - name: inno/hello
-#    tag: 0.2
+Repositories:
+  - name: inno/test
+    tag: 0.3
+  - name: inno/hello
+    tag: 0.2
 
 # hardMemory: container will be killed if exceed
 # softMemory: memory reservation
 # if set both, hard limit must be greater than soft limit
 # portMapping: host port:container port
 TaskDef:
-  - name: jameson-hello
+  -
+    name: firstTask
     taskRole: ecs-task-role
-	- container:
-	    - name: jameson-test
-		  image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/test:0.3
-		  hardMemory: 300
-		  softMemory: 200
-	      portMapping: 80:80
-	    - name: jameson-hello
-		  image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/hello:0.2
-		  hardMemory: 300
-		  softMemory: 200
-	      portMapping: 8080:8080
+    container:
+      - name: jameson-test
+        image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/test:0.3
+        hardMemory: 300
+        softMemory: 200
+        portMapping: 80:80
+      - name: jameson-hello
+        image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/test:0.2
+        hardMemory: 300
+        softMemory: 200
+        portMapping: 8080:8080
 
 # Provisioning Model: onDemand, spot
 Cluster:
@@ -59,7 +62,8 @@ Cluster:
   EBS: 22
   keyPair: jameson-keypair
   vpc: 233
-    - az.1: subnet-98a3d7f1
-	- az.2: subnet-67c77a1c
+  subnetId:
+    - subnet-98a3d7f1
+    - subnet-67c77a1c
   securityGroup: sg-5a391333
 
