@@ -1,3 +1,5 @@
+# protocol（HTTP／HTTPS／TCP）必须大写
+# yaml文件的key的大小写不能改变
 ELB:
   LoadBalance:
     name: sean-sdk-elb

@@ -13,6 +13,7 @@ def main():
         
         elb = ApplicationLoadbaLance(config)
         elb.create() 
+        #elb.delete()
     
 
 if __name__ == '__main__':

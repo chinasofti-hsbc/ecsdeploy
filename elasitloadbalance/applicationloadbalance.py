@@ -26,6 +26,18 @@ class ApplicationLoadbaLance(object):
         print "************************************"
         self.create_listener(loadBalancerArn, targetGroupArn);
         
+    def delete(self):
+        self.deregister_targets()
+        time.sleep(5)
+        print "************************************"
+        self.delete_listener()
+        time.sleep(5)
+        print "************************************"
+        self.delete_target_group()
+        time.sleep(5)
+        print "************************************"
+        self.delete_load_balancer()
+        
     def create_load_balancer(self):
         response = self.client.create_load_balancer(
             Name = self.elb['ELB']['LoadBalance']['name'],
@@ -80,3 +92,28 @@ class ApplicationLoadbaLance(object):
             Targets = self.elb['ELB']['TargetGroup']['targets']
         )
         print "register target response:%s" % response
+        
+    def delete_load_balancer(self):
+        response = self.client.delete_load_balancer(
+            LoadBalancerArn = self.elb['ELB']['LoadBalance']['loadBalancerArn']
+        )
+        print "delete load balance response:%s" % response
+        
+    def delete_listener(self):
+        response = self.client.delete_listener(
+            ListenerArn = self.elb['ELB']['LoadBalance']['listenerArn']
+        )
+        print "delete listener response:%s" % response
+        
+    def deregister_targets(self):
+        response = self.client.deregister_targets(
+            TargetGroupArn = self.elb['ELB']['TargetGroup']['targetGroupArn'],
+            Targets = self.elb['ELB']['TargetGroup']['targets']
+        )
+        print "deregiste target group response:%s" % response
+        
+    def delete_target_group(self):
+        response = self.client.delete_target_group(
+            TargetGroupArn = self.elb['ELB']['TargetGroup']['targetGroupArn']
+        )
+        print "delete target group response:%s" % response

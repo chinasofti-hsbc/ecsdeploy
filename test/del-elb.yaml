@@ -1,0 +1,12 @@
+ELB:
+  LoadBalance:
+    loadBalancerArn: arn:aws:elasticloadbalancing:us-east-2:066703160259:loadbalancer/app/sean-sdk-elb/4c6457f8bb4dc7d1
+    listenerArn: arn:aws:elasticloadbalancing:us-east-2:066703160259:listener/app/sean-sdk-elb/4c6457f8bb4dc7d1/6aa49ca067d0a0ed
+  TargetGroup:
+    targetGroupArn: arn:aws:elasticloadbalancing:us-east-2:066703160259:targetgroup/sean-sdk-target/07a63a9f33112d6d
+    targets:
+      - 
+        Id: i-0ce0cd4127b2bfdcf
+      - 
+        Id: i-08fad2f58ad2e2faf
+    
