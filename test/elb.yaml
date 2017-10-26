@@ -1,0 +1,10 @@
+ELB:
+  LoadBalance:
+    name: sean-sdk-elb
+    scheme: internet-facing
+    subnetId:
+      - subnet-98a3d7f1
+      - subnet-67c77a1c
+      - subnet-ece528a1
+    securityGroup: 
+      - sg-5a391333
