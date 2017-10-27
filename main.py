@@ -1,7 +1,8 @@
 #coding=utf-8
 import yaml
 import sys
-from elasitloadbalance.applicationloadbalance import ApplicationLoadbaLance
+from elasticloadbalance.applicationloadbalance import ApplicationLoadbaLance
+from elasticcontainerservice.cluster import Cluster
 
 def main():
     if len(sys.argv) <= 1:
@@ -14,6 +15,8 @@ def main():
         elb = ApplicationLoadbaLance(config)
         elb.create() 
         #elb.delete()
+        cluster = Cluster(config)
+        cluster.create()
     
 
 if __name__ == '__main__':
