@@ -39,7 +39,7 @@ Repositories:
 # portMapping: host port:container port
 TaskDef:
   -
-    name: firstTask
+    name: jameson-taskdef
     taskRole: ecs-task-role
     container:
       - name: jameson-test

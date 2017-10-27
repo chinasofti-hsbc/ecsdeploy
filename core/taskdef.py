@@ -3,6 +3,8 @@
 
 # Author: Liu Dan <miraclecome (at) gmail.com>
 
+from __future__ import division, print_function
+
 import sys
 import boto3
 
@@ -45,8 +47,11 @@ def taskdef(data):
                 )
 
 def list_taskdef(data):
-    names = [task['name'] for task in data['TaskDef']]
-
+    """ taskDefinitionArns response:
+        [u'arn:aws:ecs:us-east-2:066703160259:task-definition/flasktest8082:2',
+         u'arn:aws:ecs:us-east-2:066703160259:task-definition/flasktest8082:3'
+        ]
+    """
     response = client.list_task_definitions(status='ACTIVE')
     names = set([i.split('/')[1].split(':')[0] for i in response[u'taskDefinitionArns']])
     return names
