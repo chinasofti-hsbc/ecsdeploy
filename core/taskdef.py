@@ -57,7 +57,7 @@ def check_taskdef(data):
     for task in data['TaskDef']:
         if task['name'] in names:
             print('Task {} already in Task Definitions, '
-                  'Please change a task name\n Exit'.format(task['name']))
+                  'Please change a task name.\nSystem Exit'.format(task['name']))
             sys.exit(1)
 
 if __name__ == '__main__':
