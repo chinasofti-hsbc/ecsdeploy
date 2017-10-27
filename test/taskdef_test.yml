@@ -1,0 +1,17 @@
+TaskDef:
+  -
+    name: jameson-taskdef
+    taskRole: ecs-task-role
+    container:
+      - name: jameson-test
+        image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/test:0.3
+        hardMemory: 300
+        softMemory: 200
+        portMappings:
+          - 80:80
+      - name: jameson-hello
+        image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/test:0.2
+        hardMemory: 300
+        softMemory: 200
+        portMappings:
+          - 8080:8080

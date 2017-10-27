@@ -7,11 +7,10 @@ import boto3
 
 from parser import parser
 
-def init():
-    client = boto3.client('ecs')
+client = boto3.client('ecs')
 
-def taskdef():
-    data = parser('../test/config.yml')
+def taskdef(fname):
+    data = parser(fname)
 
     for task in data['TaskDef']:
         containers = []
@@ -23,11 +22,12 @@ def taskdef():
             if 'softMemory' in container:
                 containerdef['memoryReservation'] = container['softMemory']
 
+            containerdef['portMappings'] = []
             for i in container['portMappings']:
                 host_port, container_port = i.split(':')
                 containerdef['portMappings'].append({
-                    'hostPort': host_port,
-                    'containerPort': container_port
+                    'hostPort': int(host_port),
+                    'containerPort': int(container_port)
                 })
 
             containerdef.update({
@@ -41,3 +41,5 @@ def taskdef():
                 taskRoleArn=task['taskRole'],
                 containerDefinitions=containers
                 )
+if __name__ == '__main__':
+    taskdef('../test/taskdef_test.yml')
