@@ -6,6 +6,7 @@ Created on 2017年10月26日
 '''
 import boto3
 import time
+import yaml
 
 class ApplicationLoadbaLance(object):
     def __init__(self, elb):
@@ -13,18 +14,32 @@ class ApplicationLoadbaLance(object):
         self.client = boto3.client('elbv2')
     
     def create(self):
+        elb = {}
+        loadBalance = {}
         loadbalance_response = self.create_load_balancer()
         loadBalancerArn = loadbalance_response['LoadBalancers'][0]['LoadBalancerArn']
+        DNSName = loadbalance_response['LoadBalancers'][0]['DNSName']
         time.sleep(5)
         print "************************************"
         target_response = self.create_target_group()
         targetGroupArn = target_response['TargetGroups'][0]['TargetGroupArn']
+        targetArn = {'targetGroupArn': targetGroupArn, 'targets': self.elb['ELB']['TargetGroup']['targets']}
         time.sleep(5)
         print "************************************"
         self.register_targets(targetGroupArn);
         time.sleep(5)
         print "************************************"
-        self.create_listener(loadBalancerArn, targetGroupArn);
+        listener_response = self.create_listener(loadBalancerArn, targetGroupArn);
+        listenerArn = listener_response['Listeners'][0]['ListenerArn']
+        loadArn = {'DNSName': DNSName, 'loadBalancerArn': loadBalancerArn, 'listenerArn': listenerArn}
+        loadBalance['LoadBalance'] = loadArn
+        loadBalance['TargetGroup'] = targetArn
+        elb['ELB'] = loadBalance
+        #save elb info
+        yamlFile = open('elb-info.yaml', "w")  
+        yaml.dump(elb, yamlFile)  
+        yamlFile.close()
+        
         
     def delete(self):
         self.deregister_targets()
@@ -63,6 +78,8 @@ class ApplicationLoadbaLance(object):
             ]
         )
         print "create loadbalance listener response:%s" % response
+        
+        return response
         
     def create_target_group(self):
         response = self.client.create_target_group(
