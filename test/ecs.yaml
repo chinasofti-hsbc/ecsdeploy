@@ -1,0 +1,9 @@
+Cluster:
+  name: sean-sdk-cluster
+  numberOfInstance: 2
+  resource:
+    cpu: 1
+    memory: 1024
+    ports:
+      - 22
+      - 80
