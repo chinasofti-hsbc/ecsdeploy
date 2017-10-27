@@ -3,15 +3,17 @@
 
 # Author: Liu Dan <miraclecome (at) gmail.com>
 
+import sys
 import boto3
 
 from parser import parser
 
 client = boto3.client('ecs')
 
-def taskdef(fname):
-    data = parser(fname)
+def parse_config(fname):
+    return parser(fname)
 
+def taskdef(data):
     for task in data['TaskDef']:
         containers = []
         for container in task['container']:
@@ -36,10 +38,32 @@ def taskdef(fname):
             })
             containers.append(containerdef)
 
-        client.register_task_definition(
+        response = client.register_task_definition(
                 family=task['name'],
                 taskRoleArn=task['taskRole'],
                 containerDefinitions=containers
                 )
+
+def list_taskdef(data):
+    names = [task['name'] for task in data['TaskDef']]
+
+    response = client.list_task_definitions(status='ACTIVE')
+    names = set([i.split('/')[1].split(':')[0] for i in response[u'taskDefinitionArns']])
+    return names
+
+def check_taskdef(data):
+    names = list_taskdef(data)
+
+    for task in data['TaskDef']:
+        if task['name'] in names:
+            print('Task {} already in Task Definitions, '
+                  'Please change a task name\n Exit'.format(task['name']))
+            sys.exit(1)
+
 if __name__ == '__main__':
-    taskdef('../test/taskdef_test.yml')
+    fname = '../test/config.yml'
+    data = parse_config(fname)
+
+    check_taskdef(data)
+    print('check ok')
+
