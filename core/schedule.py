@@ -10,13 +10,12 @@ import paramiko
 from math import ceil
 from paramiko.ssh_exception import NoValidConnectionsError
 
-from settings import REGION_NAME, ENV
 from awsapi.ec2manager import Ec2Manager
 
 class Schedule(object):
 
-    def __init__(self, machine_num, tag, *args, **kwargs):
-        self.ec2manager = Ec2Manager(REGION_NAME, tag)
+    def __init__(self, machine_num, config, tag, *args, **kwargs):
+        self.ec2manager = Ec2Manager(config, tag)
         self.ids = self.ec2manager.create_instances(self.machine_num)
         self.id_cookie_dict = self._assign_cookies(kwargs.get('cookies', []))
 
@@ -50,7 +49,7 @@ class Schedule(object):
         else:
             command = base_cmd.format(idx)
         ipaddr = self.ec2manager.get_ipaddr(one_id)
-        self.remote_command(ipaddr, command)
+        return self.remote_command(ipaddr, command)
 
 
     def run_once(self, *args, **kwargs):
@@ -60,9 +59,12 @@ class Schedule(object):
                     ' -t {timeout}'.format(env=ENV, timeout=1))
         """
         base_cmd = kwargs.get('base_cmd', '')
+        results = []
 
         for i in self.ids:
-            self.run_command(i, base_cmd)
+            ret = self.run_command(i, base_cmd)
+            results.append(ret)
+        return results
 
 
     def remote_command(self, ipaddr, command, repeat=20):
@@ -76,4 +78,5 @@ class Schedule(object):
             except:
                 time.sleep(10)
         self.ssh.close()
+        return ssh_stdout
 

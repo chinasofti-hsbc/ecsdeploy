@@ -17,22 +17,10 @@ class Ec2Manager(object):
             'amiid': 'ami-6a3c790a',
             'instancetype': 't2.micro',
             'securitygroupid': ['sg-cf178ba7'],
-        },
-        'ap-northeast-1': {
-            'keypair': 'crawl-tokyo',
-            'amiid': 'ami-87eb83e0',  # work1219d slack worker + biprice
-            'instancetype': 't2.nano',
-            'securitygroupid': ['sg-fcbf0998'],
-        },
-        'cn-north-1': {
-            'keypair': 'crawl-beijing',
-            'amiid': 'ami-a89146c5',
-            'instancetype': 't2.micro',
-            'securitygroupid': ['sg-ab4679ce'],
         }
     }
 
-    def __init__(self, config=self.config['us-east-2'], tag='crawler', amiid=None):
+    def __init__(self, config, tag='crawler', amiid=None):
         region_name = config.keys()[0]
 
         self.region_name = region_name
@@ -159,3 +147,6 @@ class Ec2Manager(object):
 
         self.queue.extend(group_instances)
         return ids
+
+if __name__ == '__main__':
+    pass
