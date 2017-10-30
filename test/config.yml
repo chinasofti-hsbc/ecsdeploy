@@ -69,3 +69,27 @@ Cluster:
     - subnet-67c77a1c
   securityGroup: sg-5a391333
 
+
+Service:
+  name: default-taskdef
+  cluster: aws-loan-ecs-cluster
+  taskdef: jameson-taskdef:11
+  desiredCount: 3
+  maximumPercent: 200
+  minimumHealthyPercent: 50
+  role: ecsServiceRole1
+  placementStrategy:
+    - type: spread
+      field: instanceId
+  placementConstraints:
+    - type: distinctInstance
+  loadBalancers:
+    - targetGroupArn: jameson-routing
+      loadBalancerName: jameson-elb
+      containerName: jameson-test
+      containerPort: 80
+    - targetGroupArn: jameson-8080
+      loadBalancerName: jameson-elb
+      containerName: jameson-hello
+      containerPort: 8080
+
