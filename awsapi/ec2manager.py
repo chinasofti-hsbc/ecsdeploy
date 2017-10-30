@@ -11,7 +11,7 @@ from collections import deque
 
 class Ec2Manager(object):
     
-    def __init__(self, config, tag='', amiid=None):
+    def __init__(self, config, tag='sdk', amiid=None):
         self.config = config
         region_name = self.config.keys()[0]
         self.region_name = region_name
@@ -23,7 +23,7 @@ class Ec2Manager(object):
         self.ec2 = boto3.resource('ec2')
 
     def get_keypair(self):
-        return self.config[self.region_name]['keypair']
+        return self.config[self.region_name]['home'] + '/' + self.config[self.region_name]['keypair'] + '.pem'
 
     def create_instances(self, MachineNum=1):
         """ ec2.Instance(id='i-336303ac')

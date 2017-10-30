@@ -1,9 +1,10 @@
 Cluster:
   name: sean-sdk-cluster
-  numberOfInstance: 2
+  numberOfInstance: 1
   instance:
     us-east-2: 
-      keypair: /Users/wechat_team_air/Desktop/Sean/jameson-keypair.pem
+      keypair: jameson-keypair
+      home: /Users/wechat_team_air/Desktop/Sean/
       amiid: ami-c5062ba0
       instancetype: t2.micro
       securitygroupid: 

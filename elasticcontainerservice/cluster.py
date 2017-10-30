@@ -18,6 +18,7 @@ class Cluster(object):
         self.schedule = Schedule()
         
     def create(self):
+        print "****************create cluster********************"
         self.create_cluster();
         time.sleep(5)
         print "****************create instance********************"
@@ -27,13 +28,13 @@ class Cluster(object):
         public_ip = self.ec2.get_ipaddr(instance[0])
         document_out = self.schedule.remote_command(public_ip, self.ec2.get_keypair(), 
                                                     'curl http://169.254.169.254/latest/dynamic/instance-identity/document/')
-        print "****************create instance document:%s********************" % document_out
+        print "create instance document:%s" % document_out
         documentFile = open('document.json', 'w')
         documentFile.write(document_out)
         documentFile.close()
         signature = self.schedule.remote_command(public_ip, self.ec2.get_keypair(), 
                                                  'curl http://169.254.169.254/latest/dynamic/instance-identity/signature/')
-        print "****************create instance document signature:%s********************" % signature
+        print "create instance document signature:%s" % signature
         documentSignature = open('signature.txt', 'w')
         documentSignature.write(signature)
         documentSignature.close()
