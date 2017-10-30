@@ -13,10 +13,10 @@ def main():
         config = yaml.load(f)
         
         elb = ApplicationLoadbaLance(config)
-        elb.create() 
-        #elb.delete()
-        cluster = Cluster(config)
-        cluster.create()
+        #elb.create() 
+        elb.delete()
+        #cluster = Cluster(config)
+        #cluster.create()
     
 
 if __name__ == '__main__':
