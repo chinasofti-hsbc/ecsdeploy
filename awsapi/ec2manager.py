@@ -10,31 +10,17 @@ from collections import deque
 
 
 class Ec2Manager(object):
-
-    config = {
-        'us-east-2': {
-            'keypair': 'jameson-keypair',
-            'amiid': 'ami-6a3c790a',
-            'instancetype': 't2.micro',
-            'securitygroupid': ['sg-cf178ba7'],
-        }
-    }
-
-    def __init__(self, config, tag='crawler', amiid=None):
-        region_name = config.keys()[0]
-
+    
+    def __init__(self, config, tag='', amiid=None):
+        self.config = config
+        region_name = self.config.keys()[0]
         self.region_name = region_name
         self.tag = tag
         self.amiid = amiid if amiid else self.config[self.region_name]['amiid']
         self.id_instance = {}
         self.id_idx = {}
-
-        if region_name == 'cn-north-1':
-            from secret import AWS_ACCESS_ID_BJ as AWS_ACCESS_ID, AWS_SECRET_KEY_BJ as AWS_SECRET_KEY
-        elif region_name == 'ap-northeast-1':
-            from secret import AWS_ACCESS_ID_TK as AWS_ACCESS_ID, AWS_SECRET_KEY_TK as AWS_SECRET_KEY
-
-        self.ec2 = boto3.resource('ec2', region_name=region_name, aws_access_key_id=AWS_ACCESS_ID, aws_secret_access_key=AWS_SECRET_KEY)
+        
+        self.ec2 = boto3.resource('ec2')
 
     def get_keypair(self):
         return self.config[self.region_name]['keypair']
@@ -72,10 +58,7 @@ class Ec2Manager(object):
     def get_ipaddr(self, one_id):
         i = self.id_instance[one_id]
         i.load()
-        return i.private_ip_address
-
-    def get_idx_by_id(self, one_id):
-        return self.id_idx[one_id]
+        return i.public_ip_address
 
     def get_ids_in_status(self, status):
         """
