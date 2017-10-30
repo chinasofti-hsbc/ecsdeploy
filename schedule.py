@@ -53,7 +53,7 @@ class Schedule(object):
         self.remote_command(ipaddr, command)
 
 
-    def run_forever(self, *args, **kwargs):
+    def run_once(self, *args, **kwargs):
         """
         base_cmd = ('cd /opt/service/awscrawler; source env.sh {env}; '
                     'dtach -n /tmp/worker.sock python worker.py -i {{}}'
@@ -64,24 +64,11 @@ class Schedule(object):
         for i in self.ids:
             self.run_command(i, base_cmd)
 
-        while 1:
-            before = time.time()
-            ids = self.ec2manager.stop_and_start(self.group_num)
-            for i in ids:
-                self.run_command(i, base_cmd)
-
-            if self.restart_interval != 0:
-                now = time.time()
-                sleep_interval = before + self.restart_interval - now
-                if sleep_interval > 0:
-                    time.sleep(sleep_interval)
-                before = now
-
 
     def remote_command(self, ipaddr, command, repeat=20):
         for _ in range(repeat):
             try:
-                self.ssh.connect(ipaddr, username='admin', pkey=self.pkey)
+                self.ssh.connect(ipaddr, username='ec2-user', pkey=self.pkey)
                 ssh_stdin, ssh_stdout, ssh_stderr = self.ssh.exec_command(command)
                 break
             except NoValidConnectionsError:
@@ -90,6 +77,3 @@ class Schedule(object):
                 time.sleep(10)
         self.ssh.close()
 
-
-    def stop_all_instances(self, *_):
-        self.ec2manager.terminate(self.ids)
