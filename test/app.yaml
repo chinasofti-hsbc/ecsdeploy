@@ -10,25 +10,43 @@ ELB:
       - subnet-ece528a1
     securityGroup: 
       - sg-5a391333
-    listener:
+  TargetGroup:
+    - name: sean-sdk-target1
       protocol: HTTP
       port: 80
-  TargetGroup:
-    name: sean-sdk-target
-    protocol: HTTP
-    port: 80
-    vpcId: vpc-33c4a25a
-    healthCheckProtocol: HTTP
-    healthCheckPort: traffic-port
-    healthCheckPath: /
-    targetType: instance
-    targets:
-      - 
-        Id: i-0ce0cd4127b2bfdcf
-        Port: 8090
-      - 
-        Id: i-08fad2f58ad2e2faf
-        Port: 8090
+      listener:
+        protocol: HTTP
+        port: 81
+      vpcId: vpc-33c4a25a
+      healthCheckProtocol: HTTP
+      healthCheckPort: traffic-port
+      healthCheckPath: /
+      targetType: instance
+      targets:
+        - 
+          Id: i-0ce0cd4127b2bfdcf
+          Port: 8090
+        - 
+          Id: i-08fad2f58ad2e2faf
+          Port: 8090
+    - name: sean-sdk-target2
+      protocol: HTTP
+      port: 80
+      listener:
+        protocol: HTTP
+        port: 82
+      vpcId: vpc-33c4a25a
+      healthCheckProtocol: HTTP
+      healthCheckPort: traffic-port
+      healthCheckPath: /
+      targetType: instance
+      targets:
+        - 
+          Id: i-0ce0cd4127b2bfdcf
+          Port: 80
+        - 
+          Id: i-08fad2f58ad2e2faf
+          Port: 80
 Cluster:
   name: sean-sdk-cluster
   numberOfInstance: 2
