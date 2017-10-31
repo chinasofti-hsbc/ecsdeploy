@@ -45,6 +45,7 @@ def taskdef(data):
                 taskRoleArn=task['taskRole'],
                 containerDefinitions=containers
                 )
+        print ("create taskdef response:%s" % response)
 
 def list_taskdef(data):
     """ taskDefinitionArns response:

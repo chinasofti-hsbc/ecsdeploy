@@ -1,0 +1,12 @@
+eclipse.preferences.version=1
+encoding//awsapi/ec2manager.py=utf-8
+encoding//awsapi/s3object.py=utf-8
+encoding//awsapi/secret.py=utf-8
+encoding//core/parser.py=utf-8
+encoding//core/schedule.py=utf-8
+encoding//core/service.py=utf-8
+encoding//core/taskdef.py=utf-8
+encoding//elasticcontainerservice/cluster.py=utf-8
+encoding//elasticloadbalance/applicationloadbalance.py=utf-8
+encoding/main.py=utf-8
+encoding/test.py=utf-8
