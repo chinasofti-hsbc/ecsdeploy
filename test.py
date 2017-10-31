@@ -3,17 +3,27 @@ from elasticcontainerservice.cluster import Cluster
 import sys
 import yaml
 import time
-from core.taskdef import taskdef
-    
+from core.taskdef import TaskDef
+from core.service import Service
+from awsapi.ec2manager import Ec2Manager
+
+#print "hello"   
 f = open(sys.argv[1])  
 config = yaml.load(f)
-
-taskdef(config)
-#cluster = Cluster(config)
+#task = TaskDef(config)
+#task.run_task()
+#service = Service(config)
+#service.create_service()
+#ec2 = Ec2Manager(config['Cluster']['instance'])
+#ec2.create_instances(1)
+#taskdef(config)
+cluster = Cluster(config)
 #cluster.create_cluster()
 #time.sleep(5)
 #print "************************************"
-#cluster.create()
+cluster.create()
+#cluster.register_container_instance()
+
 
 # from awsapi.ec2manager import Ec2Manager
 # from core.schedule import Schedule
@@ -35,21 +45,3 @@ taskdef(config)
 # ss = Schedule(1, config, 'sdk')
 # out = ss.remote_command('18.221.248.108', 'curl http://169.254.169.254/latest/dynamic/instance-identity/document/')
 # print out 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

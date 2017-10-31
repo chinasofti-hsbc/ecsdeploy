@@ -1,16 +1,16 @@
 {
   "devpayProductCodes" : null,
-  "privateIp" : "172.31.38.23",
-  "availabilityZone" : "us-east-2c",
+  "privateIp" : "172.31.24.217",
+  "availabilityZone" : "us-east-2b",
   "version" : "2010-08-31",
-  "instanceId" : "i-094363de80a72ded9",
+  "region" : "us-east-2",
+  "instanceId" : "i-0b880b6171133b5b2",
   "billingProducts" : null,
   "instanceType" : "t2.micro",
   "accountId" : "066703160259",
-  "imageId" : "ami-c5062ba0",
   "architecture" : "x86_64",
   "kernelId" : null,
   "ramdiskId" : null,
-  "pendingTime" : "2017-10-30T06:10:43Z",
-  "region" : "us-east-2"
+  "imageId" : "ami-34032e51",
+  "pendingTime" : "2017-10-31T08:14:15Z"
 }

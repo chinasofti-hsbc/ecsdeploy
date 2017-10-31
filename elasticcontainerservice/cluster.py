@@ -24,26 +24,29 @@ class Cluster(object):
         print "****************create instance********************"
         # create instance
         numberOfInstance = self.ecs['Cluster']['numberOfInstance']
-        instance = self.ec2.create_instances(numberOfInstance)
-        public_ip = self.ec2.get_ipaddr(instance[0])
-        document_out = self.schedule.remote_command(public_ip, self.ec2.get_keypair(), 
-                                                    'curl http://169.254.169.254/latest/dynamic/instance-identity/document/')
-        print "create instance document:%s" % document_out
-        documentFile = open('document.json', 'w')
-        documentFile.write(document_out)
-        documentFile.close()
-        signature = self.schedule.remote_command(public_ip, self.ec2.get_keypair(), 
-                                                 'curl http://169.254.169.254/latest/dynamic/instance-identity/signature/')
-        print "create instance document signature:%s" % signature
-        documentSignature = open('signature.txt', 'w')
-        documentSignature.write(signature)
-        documentSignature.close()
+        userData = "#!/bin/bash\necho ECS_CLUSTER=" + self.ecs['Cluster']['name'] + ">> /etc/ecs/ecs.config"
+        instance = self.ec2.create_instances(userData, numberOfInstance)
+        print("create ec2 container:%s" % instance)
         
-        for i in range(numberOfInstance):
-            print "****************register instance %d********************" % (i + 1)
-            self.register_container_instance()
-            time.sleep(5)
-        
+#         public_ip = self.ec2.get_ipaddr(instance[0])
+#         document_out = self.schedule.remote_command(public_ip, self.ec2.get_keypair(), 
+#                                                     'curl http://169.254.169.254/latest/dynamic/instance-identity/document/')
+#         print "create instance document:%s" % document_out
+#         documentFile = open('document.json', 'w')
+#         documentFile.write(document_out)
+#         documentFile.close()
+#         signature = self.schedule.remote_command(public_ip, self.ec2.get_keypair(), 
+#                                                  'curl http://169.254.169.254/latest/dynamic/instance-identity/signature/')
+#         print "create instance document signature:%s" % signature
+#         documentSignature = open('signature.txt', 'w')
+#         documentSignature.write(signature)
+#         documentSignature.close()
+#         
+#         for i in range(numberOfInstance):
+#             print "****************register instance %d********************" % (i + 1)
+#             self.register_container_instance()
+#             time.sleep(5)
+
     def create_cluster(self):
         response = self.client.create_cluster(
             clusterName = self.ecs['Cluster']['name']

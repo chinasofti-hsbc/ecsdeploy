@@ -25,7 +25,7 @@ class Ec2Manager(object):
     def get_keypair(self):
         return self.config[self.region_name]['home'] + '/' + self.config[self.region_name]['keypair'] + '.pem'
 
-    def create_instances(self, MachineNum=1):
+    def create_instances(self, userData, MachineNum=1):
         """ ec2.Instance(id='i-336303ac')
         """
         ins = self.ec2.create_instances(ImageId=self.amiid,
@@ -33,9 +33,15 @@ class Ec2Manager(object):
                                         MaxCount=MachineNum,
                                         KeyName=self.config[self.region_name]['keypair'],
                                         InstanceType=self.config[self.region_name]['instancetype'],
-                                        SecurityGroupIds=self.config[self.region_name]['securitygroupid'])
+                                        SecurityGroupIds=self.config[self.region_name]['securitygroupid'],
+                                        IamInstanceProfile={
+                                            'Arn': 'arn:aws:iam::066703160259:instance-profile/ecsInstanceRole'
+                                            },
+                                        UserData=userData
+                                        )
+        print ("create instance response:%s" % ins)
         time.sleep(60)
-
+        
         for idx, i in enumerate(ins):
             self.ec2.create_tags(Resources=[i.id],
                     Tags=[{'Key': self.tag, 'Value': self.tag}])
