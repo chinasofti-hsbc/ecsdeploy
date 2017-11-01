@@ -14,7 +14,6 @@ class Service(object):
     def create_service(self, loadBalance):
         strategies = []
         constraints = []
-        balancers = []
         for i in self.data['Service']['placementStrategy']:
             strategies.append({'type': i['type'], 'field': i['field']})
     
