@@ -30,9 +30,9 @@ class ApplicationLoadbaLance(object):
             targetArn = {'targetGroupArn': targetGroupArn, 'targets': targetGrup['targets']}
             action.append({'Type': 'forward', 'TargetGroupArn': targetGroupArn})
             time.sleep(5)
-            print "************************************"
-            self.register_targets(targetGroupArn, targetGrup);
-            time.sleep(5)
+#             print "************************************"
+#             self.register_targets(targetGroupArn, targetGrup);
+#             time.sleep(5)
             print "************************************"
             listener_response = self.create_listener(loadBalancerArn, targetGrup['listener'], targetGroupArn);
             listenerArn = listener_response['Listeners'][0]['ListenerArn']
@@ -47,7 +47,8 @@ class ApplicationLoadbaLance(object):
         yaml.dump(elb, yamlFile)  
         yamlFile.close()
         
-        
+        return elb
+    
     def delete(self):
         targetGrups = self.elb['ELB']['TargetGroup'];
         for targetGrup in targetGrups:

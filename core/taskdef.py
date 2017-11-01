@@ -14,36 +14,35 @@ class TaskDef(object):
         self.data = data
         
     def create_taskdef(self):
-        for task in self.data['TaskDef']:
-            containers = []
-            for container in task['container']:
-                containerdef = {}
+        containers = []
+        for container in self.data['TaskDef']['container']:
+            containerdef = {}
     
-                if 'hardMemory' in container:
-                    containerdef['memory'] = container['hardMemory']
-                if 'softMemory' in container:
-                    containerdef['memoryReservation'] = container['softMemory']
+            if 'hardMemory' in container:
+                containerdef['memory'] = container['hardMemory']
+            if 'softMemory' in container:
+                containerdef['memoryReservation'] = container['softMemory']
     
-                containerdef['portMappings'] = []
-                for i in container['portMappings']:
-                    host_port, container_port = i.split(':')
-                    containerdef['portMappings'].append({
-                        'hostPort': int(host_port),
-                        'containerPort': int(container_port)
-                    })
-    
-                containerdef.update({
-                    'name': container['name'],
-                    'image': container['image']
+            containerdef['portMappings'] = []
+            for i in container['portMappings']:
+                host_port, container_port = i.split(':')
+                containerdef['portMappings'].append({
+                    'hostPort': int(host_port),
+                    'containerPort': int(container_port)
                 })
-                containers.append(containerdef)
     
-            response = self.client.register_task_definition(
-                    family=task['name'],
-                    taskRoleArn=task['taskRole'],
-                    containerDefinitions=containers
-                    )
-            print ("create taskdef response:%s" % response)
+            containerdef.update({
+                'name': container['name'],
+                'image': container['image']
+            })
+            containers.append(containerdef)
+    
+        response = self.client.register_task_definition(
+                family=self.data['TaskDef']['name'],
+                taskRoleArn=self.data['TaskDef']['taskRole'],
+                containerDefinitions=containers
+                )
+        print ("create taskdef response:%s" % response)
 
     def list_taskdef(self):
         """ taskDefinitionArns response:

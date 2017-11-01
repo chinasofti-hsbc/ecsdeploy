@@ -11,7 +11,7 @@ class Service(object):
         self.ecs = boto3.client('ecs')
         self.data = data
         
-    def create_service(self):
+    def create_service(self, loadBalance):
         strategies = []
         constraints = []
         balancers = []
@@ -24,15 +24,8 @@ class Service(object):
             else:
                 constraints.append({'type': i['type'],
                         'expression': i['expression']})
-    
-        for i in self.data['Service']['loadBalancers']:
-            balancers.append({
-                'targetGroupArn': i['targetGroupArn'],
-                #'loadBalancerName': i['loadBalancerName'],
-                'containerName': i['containerName'],
-                'containerPort': i['containerPort']
-            })
-    
+                
+        host_port, container_port = self.data['TaskDef'][0]['container'][0]['portMappings'][0].split(':')
         response = self.ecs.create_service(
             cluster=self.data['Service']['cluster'],
             serviceName=self.data['Service']['name'],
@@ -45,7 +38,15 @@ class Service(object):
             },
             placementStrategy=strategies,
             placementConstraints=constraints,
-            loadBalancers=balancers)
+            loadBalancers=[
+                {
+                    'targetGroupArn': loadBalance['ELB']['TargetGroup'][0]['targetGroupArn'],
+                    'loadBalancerName': self.data['ELB']['LoadBalance']['name'],
+                    'containerName': self.data['TaskDef'][0]['container'][0]['name'],
+                    'containerPort': container_port
+                },
+            ],
+        )
         
         print ("create service response:%s" % response)
     

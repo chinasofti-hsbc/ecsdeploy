@@ -14,3 +14,49 @@ Cluster:
     ports:
       - 22
       - 80
+TaskDef:
+  name: sean-sdk-taskdef
+  taskRole: ecs-task-role
+  container:
+  - name: sean-container1
+    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/sean:v1
+    hardMemory: 300
+    softMemory: 200
+    portMappings:
+    - 80:80
+    
+ELB:
+  LoadBalance:
+    name: sean-sdk-elb
+    scheme: internet-facing
+    subnetId:
+      - subnet-98a3d7f1
+      - subnet-67c77a1c
+      - subnet-ece528a1
+    securityGroup: 
+      - sg-5a391333
+  TargetGroup:
+    - name: sean-sdk-target1
+      protocol: HTTP
+      port: 80
+      listener:
+        protocol: HTTP
+        port: 81
+      vpcId: vpc-33c4a25a
+      healthCheckProtocol: HTTP
+      healthCheckPort: traffic-port
+      healthCheckPath: /
+      targetType: instance
+Service:
+  name: sean-sdk-service
+  cluster: sean-sdk-cluster
+  taskdef: sean-sdk-taskdef
+  desiredCount: 2
+  maximumPercent: 200
+  minimumHealthyPercent: 50
+  role: ecsServiceRole1
+  placementStrategy:
+  - type: spread
+    field: instanceId
+  placementConstraints:
+  - type: distinctInstance
