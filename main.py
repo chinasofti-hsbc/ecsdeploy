@@ -5,6 +5,7 @@ from elasticloadbalance.applicationloadbalance import ApplicationLoadbaLance
 from elasticcontainerservice.cluster import Cluster
 from core.taskdef import TaskDef
 from core.service import Service
+from autoscaling.applicationautoscaling import ApplicationAutoScaling
 
 def main():
     if len(sys.argv) <= 1:
@@ -28,6 +29,11 @@ def main():
         #create service
         service = Service(config)
         service.create_service(loadBalance)
+        
+        #add auto scaling
+        autoScaling = ApplicationAutoScaling(config)
+        autoScaling.register_scalable_target()
+        autoScaling.put_scaling_policy()
     
 
 if __name__ == '__main__':

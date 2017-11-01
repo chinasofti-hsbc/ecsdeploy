@@ -6,10 +6,14 @@ import time
 from core.taskdef import TaskDef
 from core.service import Service
 from awsapi.ec2manager import Ec2Manager
+from autoscaling.applicationautoscaling import ApplicationAutoScaling
 
 #print "hello"   
 f = open(sys.argv[1])  
 config = yaml.load(f)
+autoScaling = ApplicationAutoScaling(config)
+autoScaling.register_scalable_target()
+autoScaling.put_scaling_policy()
 #task = TaskDef(config)
 #task.run_task()
 #task = Service(config)
@@ -17,11 +21,11 @@ config = yaml.load(f)
 #ec2 = Ec2Manager(config['Cluster']['instance'])
 #ec2.create_instances(1)
 #taskdef(config)
-cluster = Cluster(config)
+#cluster = Cluster(config)
 #cluster.create_cluster()
 #time.sleep(5)
 #print "************************************"
-cluster.create()
+#cluster.create()
 #cluster.register_container_instance()
 
 

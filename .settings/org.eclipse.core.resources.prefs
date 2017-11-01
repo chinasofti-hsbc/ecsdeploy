@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//autoscaling/applicationautoscaling.py=utf-8
 encoding//awsapi/ec2manager.py=utf-8
 encoding//core/parser.py=utf-8
 encoding//core/schedule.py=utf-8
