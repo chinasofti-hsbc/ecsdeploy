@@ -19,7 +19,7 @@ TaskDef:
   taskRole: ecs-task-role
   container:
   - name: sean-container1
-    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/sean:v1
+    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/sean:latest
     hardMemory: 300
     softMemory: 200
     portMappings:
@@ -41,7 +41,7 @@ ELB:
       port: 80
       listener:
         protocol: HTTP
-        port: 81
+        port: 80
       vpcId: vpc-33c4a25a
       healthCheckProtocol: HTTP
       healthCheckPort: traffic-port
