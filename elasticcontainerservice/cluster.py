@@ -14,7 +14,7 @@ class Cluster(object):
     def __init__(self, ecs): 
         self.ecs = ecs
         self.client = boto3.client('ecs')
-        self.ec2 = Ec2Manager(ecs['Cluster']['instance'])
+        self.ec2 = Ec2Manager(ecs)
         self.schedule = Schedule()
         
     def create(self):
@@ -23,9 +23,7 @@ class Cluster(object):
         time.sleep(5)
         print "****************create instance********************"
         # create instance
-        numberOfInstance = self.ecs['Cluster']['numberOfInstance']
-        userData = "#!/bin/bash\necho ECS_CLUSTER=" + self.ecs['Cluster']['name'] + ">> /etc/ecs/ecs.config"
-        instance = self.ec2.create_instances(userData, numberOfInstance)
+        instance = self.ec2.create_instances()
         print("create ec2 container:%s" % instance)
         
 #         public_ip = self.ec2.get_ipaddr(instance[0])

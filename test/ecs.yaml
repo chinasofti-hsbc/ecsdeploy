@@ -1,11 +1,11 @@
 Cluster:
   name: sean-sdk-cluster
   numberOfInstance: 2
-  instance:
-    us-east-2: 
+  instance: 
       keypair: jameson-keypair
       amiid: ami-34032e51
       instancetype: t2.micro
+      iamarn: arn:aws:iam::066703160259:instance-profile/ecsInstanceRole
       securitygroupid: 
        - sg-5a391333
   resource:

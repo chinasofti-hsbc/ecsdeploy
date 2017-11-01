@@ -11,42 +11,33 @@ from collections import deque
 
 class Ec2Manager(object):
     
-    def __init__(self, config, tag='sdk', amiid=None):
+    def __init__(self, config, amiid = 'ami-34032e51'):
         self.config = config
-        region_name = self.config.keys()[0]
-        self.region_name = region_name
-        self.tag = tag
-        self.amiid = amiid if amiid else self.config[self.region_name]['amiid']
-        self.id_instance = {}
-        self.id_idx = {}
-        
+        if not config['Cluster']['instance'].has_key('amiid'):
+            self.config['Cluster']['instance'] = amiid
         self.ec2 = boto3.resource('ec2')
-
-    def get_keypair(self):
-        return self.config[self.region_name]['home'] + '/' + self.config[self.region_name]['keypair'] + '.pem'
-
-    def create_instances(self, userData, MachineNum=1):
+        self.id_instance = {}
+        
+    def create_instances(self):
         """ ec2.Instance(id='i-336303ac')
         """
-        ins = self.ec2.create_instances(ImageId=self.amiid,
-                                        MinCount=MachineNum,
-                                        MaxCount=MachineNum,
-                                        KeyName=self.config[self.region_name]['keypair'],
-                                        InstanceType=self.config[self.region_name]['instancetype'],
-                                        SecurityGroupIds=self.config[self.region_name]['securitygroupid'],
+        userData = "#!/bin/bash\necho ECS_CLUSTER=" + self.config['Cluster']['name'] + ">> /etc/ecs/ecs.config"
+        ins = self.ec2.create_instances(ImageId = self.config['Cluster']['instance']['amiid'],
+                                        MinCount = self.config['Cluster']['numberOfInstance'],
+                                        MaxCount = self.config['Cluster']['numberOfInstance'],
+                                        KeyName = self.config['Cluster']['instance']['keypair'],
+                                        InstanceType = self.config['Cluster']['instance']['instancetype'],
+                                        SecurityGroupIds = self.config['Cluster']['instance']['securitygroupid'],
                                         IamInstanceProfile={
-                                            'Arn': 'arn:aws:iam::066703160259:instance-profile/ecsInstanceRole'
-                                            },
-                                        UserData=userData
+                                            'Arn': self.config['Cluster']['instance']['iamarn']
+                                        },
+                                        UserData = userData
                                         )
         print ("create instance response:%s" % ins)
         time.sleep(60)
         
         for idx, i in enumerate(ins):
-            self.ec2.create_tags(Resources=[i.id],
-                    Tags=[{'Key': self.tag, 'Value': self.tag}])
             self.id_instance[i.id] = i
-            self.id_idx[i.id] = idx
 
         self.queue = deque(ins)
         return self.id_instance.keys()
