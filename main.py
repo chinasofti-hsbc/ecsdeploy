@@ -15,7 +15,7 @@ def main():
         config = yaml.load(f)
         #crete cluster
         cluster = Cluster(config)
-        instances = cluster.create()
+        cluster.create()
         
         #create taskdef
         task = TaskDef(config)

@@ -25,7 +25,7 @@ class Service(object):
                 constraints.append({'type': i['type'],
                         'expression': i['expression']})
                 
-        host_port, container_port = self.data['TaskDef'][0]['container'][0]['portMappings'][0].split(':')
+        host_port, container_port = self.data['TaskDef']['container'][0]['portMappings'][0].split(':')
         response = self.ecs.create_service(
             cluster=self.data['Service']['cluster'],
             serviceName=self.data['Service']['name'],
@@ -41,9 +41,8 @@ class Service(object):
             loadBalancers=[
                 {
                     'targetGroupArn': loadBalance['ELB']['TargetGroup'][0]['targetGroupArn'],
-                    'loadBalancerName': self.data['ELB']['LoadBalance']['name'],
-                    'containerName': self.data['TaskDef'][0]['container'][0]['name'],
-                    'containerPort': container_port
+                    'containerName': self.data['TaskDef']['container'][0]['name'],
+                    'containerPort': int(container_port)
                 },
             ],
         )

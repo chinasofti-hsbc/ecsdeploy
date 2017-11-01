@@ -27,7 +27,7 @@ class ApplicationLoadbaLance(object):
         for targetGrup in targetGrups:
             target_response = self.create_target_group(targetGrup)
             targetGroupArn = target_response['TargetGroups'][0]['TargetGroupArn']
-            targetArn = {'targetGroupArn': targetGroupArn, 'targets': targetGrup['targets']}
+            targetArn = {'targetGroupArn': targetGroupArn}
             action.append({'Type': 'forward', 'TargetGroupArn': targetGroupArn})
             time.sleep(5)
 #             print "************************************"
