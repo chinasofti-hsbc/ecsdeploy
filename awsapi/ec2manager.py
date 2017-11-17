@@ -10,14 +10,16 @@ from collections import deque
 
 
 class Ec2Manager(object):
-    
-    def __init__(self, config, amiid = 'ami-34032e51'):
+
+    def __init__(self, config, amiid=None, tag=None):
         self.config = config
-        if not config['Cluster']['instance'].has_key('amiid'):
-            self.config['Cluster']['instance'] = amiid
+        self.tag = tag
+        if amiid:
+            self.config['Cluster']['instance']['ammid'] = amiid
         self.ec2 = boto3.resource('ec2')
         self.id_instance = {}
-        
+        self.id_idx = {}
+
     def create_instances(self):
         """ ec2.Instance(id='i-336303ac')
         """
@@ -35,7 +37,7 @@ class Ec2Manager(object):
                                         )
         print ("create instance response:%s" % ins)
         time.sleep(60)
-        
+
         for idx, i in enumerate(ins):
             self.id_instance[i.id] = i
 
@@ -43,6 +45,26 @@ class Ec2Manager(object):
         return self.id_instance.keys()
 
 
+    def create_instances_v2(self):
+        """ ec2.Instance(id='i-336303ac')
+        """
+        ins = self.ec2.create_instances(ImageId = self.config['Cluster']['instance']['amiid'],
+                                        MinCount = self.config['Cluster']['numberOfInstance'],
+                                        MaxCount = self.config['Cluster']['numberOfInstance'],
+                                        KeyName = self.config['Cluster']['instance']['keypair'],
+                                        InstanceType = self.config['Cluster']['instance']['instancetype'],
+                                        SecurityGroupIds = self.config['Cluster']['instance']['securitygroupid'])
+        time.sleep(60)
+
+        for idx, i in enumerate(ins):
+            self.ec2.create_tags(Resources=[i.id],
+                    Tags=[{'Key': self.tag, 'Value': self.tag}])
+            self.id_instance[i.id] = i
+            self.id_idx[i.id] = idx
+
+        self.queue = deque(ins)
+        return self.id_instance.keys()
+    
     def start(self, ids):
         self.ec2.instances.filter(InstanceIds=ids).start()
 
@@ -56,6 +78,9 @@ class Ec2Manager(object):
         i = self.id_instance[one_id]
         i.load()
         return i.public_ip_address
+
+    def get_idx_by_id(self, one_id):
+        return self.id_idx[one_id]
 
     def get_ids_in_status(self, status):
         """

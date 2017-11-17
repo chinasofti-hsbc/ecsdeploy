@@ -1,8 +1,13 @@
-from tempfile import TemporaryFile,NamedTemporaryFile
-f = NamedTemporaryFile()
-# /opt/bitnami/hadoop/etc/hadoop/core-site.xml
-f.write("""
-<?xml version="1.0" encoding="UTF-8"?>
+#!/usr/bin/env python
+
+# This file's configuration is only for
+
+from tempfile import NamedTemporaryFile
+
+def write_core_temp(master_ip):
+    f = NamedTemporaryFile(mode='w+t')
+    # /opt/bitnami/hadoop/etc/hadoop/core-site.xml
+    f.write("""<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +28,7 @@ f.write("""
 <configuration>
   <property>
     <name>fs.default.name</name>
-    <value>hdfs://localhost:9000</value>
+    <value>hdfs://{}:9000</value>
   </property>
   <property>
       <name>dfs.http.address</name>
@@ -49,14 +54,16 @@ f.write("""
     <name>hadoop.proxyuser.root.groups</name>
     <value>*</value>
   </property>
-</configuration>
-""")
-print f.name
-f.close()
+</configuration>""".format(master_ip))
 
-# /opt/bitnami/hadoop/etc/hadoop/hdfs-site.xml
-f.write("""
-<?xml version="1.0" encoding="UTF-8"?>
+    f.seek(0)
+    f.close()
+
+
+def write_hdfs_temp():
+    f = NamedTemporaryFile(mode='w+t')
+    # /opt/bitnami/hadoop/etc/hadoop/hdfs-site.xml
+    f.write("""<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,14 +84,48 @@ f.write("""
 <configuration>
   <property>
     <name>dfs.replication</name>
-    <value>1</value>
+    <value>3</value>
   </property>
-</configuration>
-""")
+</configuration>""")
+    f.name
+    f.close()
 
-# /opt/bitnami/hadoop/etc/hadoop/yarn-site.xml
-f.write("""
-<?xml version="1.0"?>
+
+def write_mapred_temp():
+    f = NamedTemporaryFile(mode='w+t')
+    # /opt/bitnami/hadoop/etc/hadoop/mapred-site.xml
+    f.write("""<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+</configuration>""")
+    f.name
+    f.close()
+
+
+def write_yarn_temp(yarn_resource_ip):
+    f = NamedTemporaryFile(mode='w+t')
+    # /opt/bitnami/hadoop/etc/hadoop/yarn-site.xml
+    f.write("""<?xml version="1.0"?>
 <configuration>
 <!--
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -109,6 +150,11 @@ f.write("""
   </property>
 -->
   <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>{}</value>
+  </property>
+
+  <property>
     <name>yarn.nodemanager.aux-services</name>
     <value>mapreduce_shuffle</value>
   </property>
@@ -124,33 +170,9 @@ f.write("""
     <name>yarn.nodemanager.remote-app-log-dir-suffix</name>
     <value>remote</value>
   </property>
-</configuration>
-""")
+</configuration>""".format(yarn_resource_ip))
+    f.name
+    f.close()
 
-# /opt/bitnami/hadoop/etc/hadoop/mapred-site.xml
-f.write("""
-<?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<!--
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License. See accompanying LICENSE file.
--->
-
-<!-- Put site-specific property overrides in this file. -->
-
-<configuration>
-  <property>
-    <name>mapreduce.framework.name</name>
-    <value>yarn</value>
-  </property>
-</configuration>
-""")
+if __name__ == '__main__':
+    write_core_temp()
