@@ -5,10 +5,11 @@ ELB:
   LoadBalance:
     name: jameson-elb
     scheme: internet-facing
-    vpc: 233
     subnetId:
     - sg-5a391333
     - sg-5a391334
+    securityGroup:
+      - sg-cf178ba7
   TargetGroup:
   - name: jameson-80
     port: 80
@@ -78,3 +79,7 @@ Service:
     loadBalancerName: sean-elb-ecs
     containerName: sean-container1
     containerPort: 80
+  - targetGroupArn: jameson-8080
+    loadBalancerName: jameson-elb
+    containerName: jameson-hello
+    containerPort: 8080
