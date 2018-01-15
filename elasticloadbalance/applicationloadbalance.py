@@ -21,7 +21,7 @@ class ApplicationLoadbaLance(object):
         DNSName = loadbalance_response['LoadBalancers'][0]['DNSName']
         time.sleep(5)
         print "************************************"
-        targetGrups = self.elb['ELB']['TargetGroup'];
+        targetGrups = self.elb['ELB']['TargetGroup']
         targetArns = []
         action = []
         for targetGrup in targetGrups:
@@ -35,8 +35,7 @@ class ApplicationLoadbaLance(object):
 #             time.sleep(5)
             print "************************************"
             listener_response = self.create_listener(loadBalancerArn, targetGrup['listener'], targetGroupArn);
-            listenerArn = listener_response['Listeners'][0]['ListenerArn']
-            targetArn['listenerArn'] = listenerArn
+            targetArn['listenerArn'] = listener_response['Listeners'][0]['ListenerArn']
             targetArns.append(targetArn)
         loadArn = {'DNSName': DNSName, 'loadBalancerArn': loadBalancerArn}
         loadBalance['LoadBalance'] = loadArn
@@ -49,6 +48,37 @@ class ApplicationLoadbaLance(object):
         
         return elb
     
+    def create_target_group_under_loadbalance(self, loadbalance):
+        """ elastic load balance already created,
+            target group is related to app, no target group created.
+
+            parameter loadbalance: {'DNSName': DNSName, 'loadBalancerArn': loadBalancerArn}
+        """
+        targetArns = []
+        loadBalancerArn = loadbalance['loadBalancerArn']
+        for targetGrup in self.elb['ELB']['TargetGroup']:
+            target_response = self.create_target_group(targetGrup)
+            targetGroupArn = target_response['TargetGroups'][0]['TargetGroupArn']
+            targetArn = {'targetGroupArn': targetGroupArn}
+            time.sleep(5)
+            print "************************************"
+
+            listener_response = self.create_listener(loadBalancerArn, targetGrup['listener'], targetGroupArn);
+            targetArn['listenerArn'] = listener_response['Listeners'][0]['ListenerArn']
+            targetArns.append(targetArn)
+
+        elb = {
+            'ELB':
+                {
+                    'LoadBalance': loadbalance,
+                    'TargetGroup': targetArns
+                }
+        }
+        with open('elb-info.yaml', "w") as fd:  
+            yaml.dump(elb, fd)
+        return elb
+
+
     def delete(self):
         targetGrups = self.elb['ELB']['TargetGroup'];
         for targetGrup in targetGrups:

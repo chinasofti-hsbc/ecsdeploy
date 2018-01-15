@@ -1,0 +1,43 @@
+TaskDef:
+  name: sean-sdk-taskdef
+  taskRole: ecs-task-role
+  container:
+  - name: sean-container1
+    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/sean:latest
+    hardMemory: 300
+    softMemory: 200
+    portMappings:
+    - 80:80
+
+ELB:
+  TargetGroup:
+  - name: sean-sdk-target1
+    protocol: HTTP
+    port: 80
+    listener:
+      protocol: HTTP
+      port: 80
+    healthCheckProtocol: HTTP
+    healthCheckPort: traffic-port
+    healthCheckPath: /
+    targetType: instance
+
+Service:
+  name: sean-sdk-service
+  cluster: sean-sdk-cluster
+  taskdef: sean-sdk-taskdef
+  desiredCount: 2
+  maximumPercent: 200
+  minimumHealthyPercent: 50
+  role: ecsServiceRole1
+  placementStrategy:
+  - type: spread
+    field: instanceId
+  placementConstraints:
+  - type: distinctInstance
+
+AutoScaling:
+  name: web-app-cpu-gt-75
+  iamarn: arn:aws:iam::066703160259:role/ecsAutoscaleRole
+  maxCount: 5
+  minCount: 1

@@ -12,6 +12,9 @@ class Service(object):
         self.data = data
         
     def create_service(self, loadBalance):
+        """ targetGroupArn is single, not multiple.
+            one container, one service, one port.
+        """
         strategies = []
         constraints = []
         balancers = []
@@ -49,3 +52,14 @@ class Service(object):
         
         print ("create service response:%s" % response)
     
+    def update_service(self, data):
+        response = self.ecs.update_service(
+                cluster=self.data['Service']['cluster'],
+                serviceName=self.data['Service']['name'],
+                taskDefinition=self.data['Service']['taskdef'],
+                desiredCount=self.data['Service']['desiredCount'],
+                deploymentConfiguration={
+                    'maximumPercent': self.data['Service']['maximumPercent'],
+                    'minimumHealthyPercent': self.data['Service']['minimumHealthyPercent'],
+                }
+                )
