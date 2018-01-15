@@ -10,8 +10,11 @@ class ApplicationAutoScaling(object):
         self.config = config
         self.client = boto3.client('application-autoscaling')
     
-    def register_scalable_target(self):
-        resourceId = 'service/' + self.config['Cluster']['name'] + '/' + self.config['Service']['name']
+    def register_scalable_target(self, cluster_name=''):
+        if 'Cluster' not in self.config:
+            resourceId = 'service/' + cluster_name + '/' + self.config['Service']['name']
+        else:
+            resourceId = 'service/' + self.config['Cluster']['name'] + '/' + self.config['Service']['name']
         response = self.client.register_scalable_target(
             MaxCapacity = int(self.config['AutoScaling']['maxCount']),
             MinCapacity = int(self.config['AutoScaling']['minCount']),
@@ -23,8 +26,11 @@ class ApplicationAutoScaling(object):
         
         print ("register scaling target response:%s" % response)
         
-    def put_scaling_policy(self):
-        resourceId = 'service/' + self.config['Cluster']['name'] + '/' + self.config['Service']['name']
+    def put_scaling_policy(self, cluster_name=''):
+        if 'Cluster' not in self.config:
+            resourceId = 'service/' + cluster_name + '/' + self.config['Service']['name']
+        else:
+            resourceId = 'service/' + self.config['Cluster']['name'] + '/' + self.config['Service']['name']
         response = self.client.put_scaling_policy(
             PolicyName = self.config['AutoScaling']['name'],
             PolicyType = 'StepScaling',
