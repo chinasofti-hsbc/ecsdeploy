@@ -1,2 +1,0 @@
-ELB:
-  LoadBalance: {DNSName: sean-sdk-elb-41244414.us-east-2.elb.amazonaws.com, loadBalancerArn: 'arn:aws:elasticloadbalancing:us-east-2:066703160259:loadbalancer/app/sean-sdk-elb/2f1a69346991f6d8'}

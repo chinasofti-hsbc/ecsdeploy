@@ -1,13 +1,13 @@
 TaskDef:
-  name: sean-sdk-taskdef
-  taskRole: ecs-task-role
-  container:
-  - name: sean-container1
-    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/sean:latest
-    hardMemory: 300
-    softMemory: 200
-    portMappings:
-    - 80:80
+  name: demotest8082
+    taskRole: ecs-task-role
+    container:
+    - name: inno/8082
+      image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/8082:0.1
+      hardMemory: 128
+      softMemory: 128
+      portMappings:
+      - 8082:8082
 
 ELB:
   TargetGroup:
@@ -23,18 +23,18 @@ ELB:
     targetType: instance
 
 Service:
-  name: sean-sdk-service
-  cluster: sean-sdk-cluster
-  taskdef: sean-sdk-taskdef
-  desiredCount: 2
-  maximumPercent: 200
+  name: demotest
+  desiredCount: 1
   minimumHealthyPercent: 50
+  maximumPercent: 200
   role: ecsServiceRole1
   placementStrategy:
   - type: spread
     field: instanceId
   placementConstraints:
   - type: distinctInstance
+
+  cluster: shawn-cf-cli-v2
 
 AutoScaling:
   name: web-app-cpu-gt-75

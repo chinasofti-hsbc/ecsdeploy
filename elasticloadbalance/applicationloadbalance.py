@@ -74,8 +74,6 @@ class ApplicationLoadbaLance(object):
                     'TargetGroup': targetArns
                 }
         }
-        with open('elb-info.yaml', "w") as fd:  
-            yaml.dump(elb, fd)
         return elb
 
 
