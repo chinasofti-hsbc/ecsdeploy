@@ -3,8 +3,9 @@
 
 # Author: Liu Dan <miraclecome (at) gmail.com>
 
+import json
 import sys
-sys.path.append('../')
+sys.path.append('..')
 
 from core.parser import parser
 from core.taskdef import TaskDef
@@ -14,25 +15,26 @@ from elasticloadbalance.applicationloadbalance import ApplicationLoadbaLance
 from autoscaling.applicationautoscaling import ApplicationAutoScaling
 
 def load_data():
-    jdata = parser('conf/create_service.yml')
+    jdata = parser('../conf/create_service.yml')
     jdata['Cluster'] = {}
-    with open('conf/out.json') as fd:
+    jdata['ELB']['LoadBalance'] = {}
+    with open('../conf/out.json') as fd:
         js = json.load(fd)
         for item in js[u'Stacks'][0][u'Outputs']:
             if item[u'OutputKey'] == u'ECS':
                 jdata['Cluster']['name'] = item[u'OutputValue']
             elif item[u'OutputKey'] == u'LoadBalancerUrl':
-                jdata['ELB']['DNSName'] = item[u'OutputValue']
+                jdata['ELB']['LoadBalance']['DNSName'] = item[u'OutputValue']
             elif item[u'OutputKey'] == u'LoadBalancer':
-                jdata['ELB']['loadBalancerArn'] = item[u'OutputValue']
+                jdata['ELB']['LoadBalance']['loadBalancerArn'] = item[u'OutputValue']
     return jdata
 
 
 def create_service():
     jdata = load_data()
 
-    task = TaskDef(jdata)
-    task.create_taskdef()
+#    task = TaskDef(jdata)
+#    task.create_taskdef()
 
     elb = ApplicationLoadbaLance(jdata)
     alb = elb.create_target_group_under_loadbalance()

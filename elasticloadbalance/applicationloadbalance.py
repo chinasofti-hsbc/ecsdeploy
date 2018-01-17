@@ -20,7 +20,7 @@ class ApplicationLoadbaLance(object):
         loadBalancerArn = loadbalance_response['LoadBalancers'][0]['LoadBalancerArn']
         DNSName = loadbalance_response['LoadBalancers'][0]['DNSName']
         time.sleep(5)
-        print "************************************"
+        print("************************************")
         targetGrups = self.elb['ELB']['TargetGroup']
         targetArns = []
         action = []
@@ -33,7 +33,7 @@ class ApplicationLoadbaLance(object):
 #             print "************************************"
 #             self.register_targets(targetGroupArn, targetGrup)
 #             time.sleep(5)
-            print "************************************"
+            print("************************************")
             listener_response = self.create_listener(loadBalancerArn, targetGrup['listener'], targetGroupArn)
             targetArn['listenerArn'] = listener_response['Listeners'][0]['ListenerArn']
             targetArns.append(targetArn)
@@ -58,10 +58,10 @@ class ApplicationLoadbaLance(object):
             targetGroupArn = target_response['TargetGroups'][0]['TargetGroupArn']
             targetArn = {'targetGroupArn': targetGroupArn}
             time.sleep(5)
-            print "************************************"
+            print("************************************")
 
             listener_response = self.create_listener(
-                self.elb['ELB']['loadBalancerArn'],
+                self.elb['ELB']['LoadBalance']['loadBalancerArn'],
                 targetGrup['listener'],
                 targetGroupArn)
             
@@ -71,7 +71,7 @@ class ApplicationLoadbaLance(object):
         elb = {
             'ELB':
                 {
-                    'LoadBalance': loadbalance,
+                    'LoadBalance': self.elb['ELB']['LoadBalance'],
                     'TargetGroup': targetArns
                 }
         }
@@ -83,13 +83,13 @@ class ApplicationLoadbaLance(object):
         for targetGrup in targetGrups:
             self.deregister_targets(targetGrup)
             time.sleep(5)
-            print "************************************"
+            print("************************************")
             self.delete_listener(targetGrup)
             time.sleep(5)
-            print "************************************"
+            print("************************************")
             self.delete_target_group(targetGrup)
             time.sleep(5)
-        print "************************************"
+        print("************************************")
         self.delete_load_balancer()
         
     def create_load_balancer(self):
@@ -100,7 +100,7 @@ class ApplicationLoadbaLance(object):
             Scheme = self.elb['ELB']['LoadBalance']['scheme'],
             Type = 'application'
         )
-        print "create application loadbalance response:%s" % response
+        print("create application loadbalance response:{}".format(response))
         
         return response
         
@@ -116,7 +116,7 @@ class ApplicationLoadbaLance(object):
                 },
             ]
         )
-        print "create loadbalance listener response:%s" % response
+        print("create loadbalance listener response: {}".format(response))
         
         return response
         
@@ -138,7 +138,7 @@ class ApplicationLoadbaLance(object):
             },
             TargetType = targetGrup['targetType']
         )
-        print "create target group response:%s" % response
+        print "create target group response: %s" % response
         
         return response
     

@@ -36,7 +36,7 @@ class TaskDef(object):
                 'image': container['image']
             })
             containers.append(containerdef)
-    
+
         response = self.client.register_task_definition(
                 family=self.data['TaskDef']['name'],
                 taskRoleArn=self.data['TaskDef']['taskRole'],

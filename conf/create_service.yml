@@ -1,29 +1,30 @@
 TaskDef:
-  name: demotest8082
-    taskRole: ecs-task-role
-    container:
-    - name: inno/8082
-      image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/inno/8082:0.1
-      hardMemory: 128
-      softMemory: 128
-      portMappings:
-      - 8082:8082
+  name: demotest8082td
+  taskRole: ecs-task-role
+  container:
+  - name: demotestflask-8082
+    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/demotestflask-8082
+    hardMemory: 128
+    softMemory: 128
+    portMappings:
+    - 8082:8082
 
 ELB:
   TargetGroup:
-  - name: shawn-cf-cli-east-2-v1
+  - name: demotest8082tg
     protocol: HTTP
-    port: 80
+    port: 8082
     listener:
       protocol: HTTP
-      port: 80
+      port: 8082
     healthCheckProtocol: HTTP
     healthCheckPort: traffic-port
     healthCheckPath: /
     targetType: instance
+    vpcId: vpc-e536e08d
 
 Service:
-  name: demotest
+  name: demotest8082service
   desiredCount: 1
   minimumHealthyPercent: 50
   maximumPercent: 200
@@ -36,7 +37,7 @@ Service:
 
 
 AutoScaling:
-  name: web-app-cpu-gt-75
+  name: demotest8082asg
   iamarn: arn:aws:iam::066703160259:role/ecsAutoscaleRole
-  maxCount: 5
+  maxCount: 4
   minCount: 1
