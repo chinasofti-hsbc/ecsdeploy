@@ -15,30 +15,30 @@ from autoscaling.applicationautoscaling import ApplicationAutoScaling
 
 def load_data():
     jdata = parser('conf/create_service.yml')
-    loadbalance = {'ELB': {}, 'Cluster': {}}
+    jdata['Cluster'] = {}
     with open('conf/out.json') as fd:
         js = json.load(fd)
         for item in js[u'Stacks'][0][u'Outputs']:
             if item[u'OutputKey'] == u'ECS':
-                loadbalance['Cluster']['name'] = item[u'OutputValue']
+                jdata['Cluster']['name'] = item[u'OutputValue']
             elif item[u'OutputKey'] == u'LoadBalancerUrl':
-                loadbalance['ELB']['DNSName'] = item[u'OutputValue']
+                jdata['ELB']['DNSName'] = item[u'OutputValue']
             elif item[u'OutputKey'] == u'LoadBalancer':
-                loadbalance['ELB']['loadBalancerArn'] = item[u'OutputValue']
-    return jdata, loadbalance
+                jdata['ELB']['loadBalancerArn'] = item[u'OutputValue']
+    return jdata
 
 
 def create_service():
-    jdata, loadbalance = load_data()
+    jdata = load_data()
 
     task = TaskDef(jdata)
     task.create_taskdef()
 
     elb = ApplicationLoadbaLance(jdata)
-    alb = elb.create_target_group_under_loadbalance(loadbalance['ELB'])
+    alb = elb.create_target_group_under_loadbalance()
 
     service = Service(jdata)
-    service.create_service(alb)
+    service.create_service()
 
     autoScaling = ApplicationAutoScaling(jdata)
     autoScaling.register_scalable_target()

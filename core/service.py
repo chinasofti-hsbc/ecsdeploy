@@ -11,7 +11,7 @@ class Service(object):
         self.ecs = boto3.client('ecs')
         self.data = data
         
-    def create_service(self, loadBalance):
+    def create_service(self):
         """ targetGroupArn is single, not multiple.
             one container, one service, one port.
         """
@@ -32,7 +32,7 @@ class Service(object):
         response = self.ecs.create_service(
             cluster=self.data['Service']['cluster'],
             serviceName=self.data['Service']['name'],
-            taskDefinition=self.data['Service']['taskdef'],
+            taskDefinition=self.data['TaskDef']['name'],
             desiredCount=self.data['Service']['desiredCount'],
             role=self.data['Service']['role'],
             deploymentConfiguration={
@@ -43,7 +43,7 @@ class Service(object):
             placementConstraints=constraints,
             loadBalancers=[
                 {
-                    'targetGroupArn': loadBalance['ELB']['TargetGroup'][0]['targetGroupArn'],
+                    'targetGroupArn': self.data['ELB']['TargetGroup'][0]['targetGroupArn'],
                     'containerName': self.data['TaskDef']['container'][0]['name'],
                     'containerPort': int(container_port)
                 },
@@ -56,7 +56,7 @@ class Service(object):
         response = self.ecs.update_service(
                 cluster=self.data['Service']['cluster'],
                 serviceName=self.data['Service']['name'],
-                taskDefinition=self.data['Service']['taskdef'],
+                taskDefinition=self.data['TaskDef']['name'],
                 desiredCount=self.data['Service']['desiredCount'],
                 deploymentConfiguration={
                     'maximumPercent': self.data['Service']['maximumPercent'],

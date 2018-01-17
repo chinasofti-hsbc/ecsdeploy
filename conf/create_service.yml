@@ -11,7 +11,7 @@ TaskDef:
 
 ELB:
   TargetGroup:
-  - name: sean-sdk-target1
+  - name: shawn-cf-cli-east-2-v1
     protocol: HTTP
     port: 80
     listener:
@@ -34,7 +34,6 @@ Service:
   placementConstraints:
   - type: distinctInstance
 
-  cluster: shawn-cf-cli-v2
 
 AutoScaling:
   name: web-app-cpu-gt-75
