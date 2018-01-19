@@ -1,0 +1,74 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-2:066703160259:stack/shawn-cf-ls/7dc2eb30-fb6e-11e7-ab40-503f2fe38cae", 
+            "Description": "\n deploy 1 vpc,2 public subnet ,2 private subnet,1 ecs ,2 SG,1 Default ALB on 80 port \n", 
+            "Tags": [], 
+            "Outputs": [
+                {
+                    "Description": " Default ALB  SecurityGroup ", 
+                    "OutputKey": "DefaultLoadBalancerSecurityGroup", 
+                    "OutputValue": "sg-0139c96a"
+                }, 
+                {
+                    "Description": " Private subnets list ", 
+                    "OutputKey": "PrivateSubnets", 
+                    "OutputValue": "subnet-d7bf66bf,subnet-5535262e"
+                }, 
+                {
+                    "Description": "  LoadBalancer Listener  ID ", 
+                    "OutputKey": "Listener", 
+                    "OutputValue": "arn:aws:elasticloadbalancing:us-east-2:066703160259:listener/app/shawn-cf-ls/f96816d5903da646/7efdcca9ced65005"
+                }, 
+                {
+                    "Description": " ECS name ", 
+                    "OutputKey": "ECS", 
+                    "OutputValue": "shawn-cf-ls"
+                }, 
+                {
+                    "Description": "The ID of the VPC", 
+                    "OutputKey": "VPCID", 
+                    "OutputValue": "vpc-2f439247"
+                }, 
+                {
+                    "Description": "  LoadBalancerUrl DNS ", 
+                    "OutputKey": "LoadBalancerUrl", 
+                    "OutputValue": "shawn-cf-ls-305583906.us-east-2.elb.amazonaws.com"
+                }, 
+                {
+                    "Description": " Public subnets list ", 
+                    "OutputKey": "PublicSubnets", 
+                    "OutputValue": "subnet-babe67d2,subnet-8f3023f4"
+                }, 
+                {
+                    "Description": "The arn of the VPC", 
+                    "ExportName": "shawn-cf-ls-VPCID", 
+                    "OutputKey": "VPC", 
+                    "OutputValue": "arn:aws:cloudformation:us-east-2:066703160259:stack/shawn-cf-ls-VPC-JI99BZI4R8ZX/84b26e70-fb6e-11e7-b78e-50faf8c48cd2"
+                }, 
+                {
+                    "Description": " ECS SecurityGroup ", 
+                    "OutputKey": "ECSHostSecurityGroup", 
+                    "OutputValue": "sg-1f3dcd74"
+                }, 
+                {
+                    "Description": "The  LoadBalancer ID", 
+                    "OutputKey": "LoadBalancer", 
+                    "OutputValue": "arn:aws:elasticloadbalancing:us-east-2:066703160259:loadbalancer/app/shawn-cf-ls/f96816d5903da646"
+                }
+            ], 
+            "EnableTerminationProtection": false, 
+            "CreationTime": "2018-01-17T10:09:23.397Z", 
+            "Capabilities": [
+                "CAPABILITY_NAMED_IAM"
+            ], 
+            "StackName": "shawn-cf-ls", 
+            "NotificationARNs": [], 
+            "StackStatus": "CREATE_COMPLETE", 
+            "DisableRollback": false, 
+            "RollbackConfiguration": {}, 
+            "ChangeSetId": "arn:aws:cloudformation:us-east-2:066703160259:changeSet/awscli-cloudformation-package-deploy-1516183758/9d6e5ab1-62f7-4bd4-94bc-b7f0286222f7", 
+            "LastUpdatedTime": "2018-01-17T10:09:29.674Z"
+        }
+    ]
+}

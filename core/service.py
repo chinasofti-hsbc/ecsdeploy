@@ -11,13 +11,12 @@ class Service(object):
         self.ecs = boto3.client('ecs')
         self.data = data
         
-    def create_service(self):
+    def create_service(self, alb):
         """ targetGroupArn is single, not multiple.
             one container, one service, one port.
         """
         strategies = []
         constraints = []
-        balancers = []
         for i in self.data['Service']['placementStrategy']:
             strategies.append({'type': i['type'], 'field': i['field']})
     
@@ -30,7 +29,7 @@ class Service(object):
                 
         host_port, container_port = self.data['TaskDef']['container'][0]['portMappings'][0].split(':')
         response = self.ecs.create_service(
-            cluster=self.data['Service']['cluster'],
+            cluster=self.data['Cluster']['name'],
             serviceName=self.data['Service']['name'],
             taskDefinition=self.data['TaskDef']['name'],
             desiredCount=self.data['Service']['desiredCount'],
@@ -43,23 +42,26 @@ class Service(object):
             placementConstraints=constraints,
             loadBalancers=[
                 {
-                    'targetGroupArn': self.data['ELB']['TargetGroup'][0]['targetGroupArn'],
+                    'targetGroupArn': alb['ELB']['TargetGroup'][0]['targetGroupArn'],
                     'containerName': self.data['TaskDef']['container'][0]['name'],
                     'containerPort': int(container_port)
                 },
             ],
         )
         
-        print ("create service response:%s" % response)
+        print ("create service response: %s" % response)
     
-    def update_service(self, data):
+
+    def update_service(self):
         response = self.ecs.update_service(
-                cluster=self.data['Service']['cluster'],
-                serviceName=self.data['Service']['name'],
+                cluster=self.data['Cluster']['name'],
+                service=self.data['Service']['name'],
                 taskDefinition=self.data['TaskDef']['name'],
                 desiredCount=self.data['Service']['desiredCount'],
                 deploymentConfiguration={
                     'maximumPercent': self.data['Service']['maximumPercent'],
                     'minimumHealthyPercent': self.data['Service']['minimumHealthyPercent'],
                 }
-                )
+        )
+        print ("update service response: %s" % response)
+

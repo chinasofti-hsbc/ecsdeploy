@@ -1,21 +1,11 @@
 TaskDef:
-  name: sean-sdk-taskdef
-  taskRole: ecs-task-role
-  container:
-  - name: sean-container1
-    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/sean:latest
-    hardMemory: 300
-    softMemory: 200
-    portMappings:
-    - 80:80
+  name: demotest8082td
 
 Service:
-  name: sean-sdk-service
-  cluster: sean-sdk-cluster
-  taskdef: sean-sdk-taskdef
+  name: demotest8082service
   desiredCount: 2
-  maximumPercent: 200
   minimumHealthyPercent: 50
+  maximumPercent: 200
   role: ecsServiceRole1
   placementStrategy:
   - type: spread
@@ -23,8 +13,9 @@ Service:
   placementConstraints:
   - type: distinctInstance
 
+
 AutoScaling:
-  name: web-app-cpu-gt-75
+  name: demotest8082asg
   iamarn: arn:aws:iam::066703160259:role/ecsAutoscaleRole
-  maxCount: 5
+  maxCount: 4
   minCount: 1

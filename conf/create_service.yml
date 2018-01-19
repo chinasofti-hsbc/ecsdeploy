@@ -21,7 +21,6 @@ ELB:
     healthCheckPort: traffic-port
     healthCheckPath: /
     targetType: instance
-    vpcId: vpc-e536e08d
 
 Service:
   name: demotest8082service

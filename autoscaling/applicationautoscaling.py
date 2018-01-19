@@ -49,4 +49,4 @@ class ApplicationAutoScaling(object):
             },
         )
         
-        print ("put scaling response:%s" % response)
+        print("put scaling response:%s" % response)

@@ -53,8 +53,8 @@ class ApplicationLoadbaLance(object):
             target group is related to app, no target group created.
         """
         targetArns = []
-        for targetGrup in self.elb['ELB']['TargetGroup']:
-            target_response = self.create_target_group(targetGrup)
+        for targetGroup in self.elb['ELB']['TargetGroup']:
+            target_response = self.create_target_group(targetGroup)
             targetGroupArn = target_response['TargetGroups'][0]['TargetGroupArn']
             targetArn = {'targetGroupArn': targetGroupArn}
             time.sleep(5)
@@ -62,7 +62,7 @@ class ApplicationLoadbaLance(object):
 
             listener_response = self.create_listener(
                 self.elb['ELB']['LoadBalance']['loadBalancerArn'],
-                targetGrup['listener'],
+                targetGroup['listener'],
                 targetGroupArn)
             
             targetArn['listenerArn'] = listener_response['Listeners'][0]['ListenerArn']
