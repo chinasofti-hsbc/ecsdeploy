@@ -3,7 +3,7 @@ TaskDef:
   taskRole: ecs-task-role
   container:
   - name: demotestflask-8082
-    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/demotestflask-8082
+    image: 066703160259.dkr.ecr.us-east-2.amazonaws.com/demotestflask-8082:0.1
     hardMemory: 128
     softMemory: 128
     portMappings:

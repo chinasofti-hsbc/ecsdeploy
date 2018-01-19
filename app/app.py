@@ -74,5 +74,5 @@ def update_service():
 #    autoScaling.put_scaling_policy()
 
 if __name__ == '__main__':
-#    create_service()
-    update_service()
+    create_service()
+#    update_service()
